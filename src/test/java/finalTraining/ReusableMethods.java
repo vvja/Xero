@@ -16,6 +16,12 @@ import com.relevantcodes.extentreports.LogStatus;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.interactions.Actions;
 
+/**
+ * 
+ * @author Venkata Bodepu
+ * 
+ *
+ */
 public class ReusableMethods {
 	static ExtentTest logger;
 	static ExtentReports report;

@@ -17,6 +17,12 @@ import com.relevantcodes.extentreports.LogStatus;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
+/**
+ * 
+ * @author Venkata Bodepu
+ * 
+ *
+ */
 public class XeroTestCases extends ReusableMethods {
 
 	
