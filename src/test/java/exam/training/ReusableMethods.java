@@ -1,4 +1,4 @@
-package finalTraining;
+package exam.training;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,7 +31,7 @@ public class ReusableMethods {
 
 	/*
 	 * name of the Method: CreateReport BriedDescriotion : This will create a empty
-	 * Extent Report. Arguments : No Arguments Created By : Automation Team created
+	 * Extent Report. Arguments : No Arguments Created By : Venkata Bodepu
 	 * Date : 14/02/2020 Last Modified : 14/02/2020
 	 */
 	public static void createReport() {
