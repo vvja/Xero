@@ -23,8 +23,9 @@ import org.openqa.selenium.interactions.Actions;
  *
  */
 public class ReusableMethods {
-	static ExtentTest logger;
-	static ExtentReports report;
+	
+	public static ExtentTest logger;
+	public static ExtentReports report;
 
 	public static WebDriver driver;
 
