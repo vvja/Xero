@@ -7,11 +7,18 @@ import java.util.concurrent.TimeUnit;
 import org.openqa.selenium.By;
 import org.openqa.selenium.By.ByName;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
@@ -27,12 +34,27 @@ import io.github.bonigarcia.wdm.WebDriverManager;
  */
 public class XeroTestCases extends ReusableMethods {
 
+	@BeforeClass
+	@Parameters( "browser" )
+	public void openBrowser(String browser) {
+		
+			if (browser.equalsIgnoreCase("Firefox")) {
+				WebDriverManager.firefoxdriver().setup();
+				driver = new FirefoxDriver();
+			} else if (browser.equalsIgnoreCase("chrome")) {
+				System.setProperty("webdriver.chrome.driver", "D:/chromedriver.exe");
+				driver = new ChromeDriver();
+			} else if (browser.equalsIgnoreCase("IE")) {
+				System.setProperty("webdriver.ie.driver", "D:/IEDriverServer.exe");
+				driver = new InternetExplorerDriver();
+			}
+			
+			createReport();
+
+		
+	}
+@Test
 	public void launchLoginPage() {
-
-		createReport();
-
-		WebDriverManager.firefoxdriver().setup();
-		driver = new FirefoxDriver();
 
 		driver.get("https://www.xero.com/us/");
 
@@ -40,12 +62,12 @@ public class XeroTestCases extends ReusableMethods {
 
 		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
-		WebElement loginbt = ReusableMethods.driver
+		WebElement loginbt = driver
 				.findElement(By.xpath("/html/body/div[4]/header/nav/div[2]/div/div[1]/div/div/ul/li[2]/a"));
 
 		loginbt.click();
 
-		ReusableMethods.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 
 	}
 
@@ -56,7 +78,6 @@ public class XeroTestCases extends ReusableMethods {
 	 */
 
 	@Test
-	@Parameters("browser")
 	public void test01NavigateToXeroLogin() {
 
 		launchLoginPage();
@@ -66,18 +87,15 @@ public class XeroTestCases extends ReusableMethods {
 		JavascriptExecutor JS = (JavascriptExecutor) driver;
 		JS.executeScript("document.getElementById('email').value='vasavijb@gmail.com'");
 		JS.executeScript("document.getElementById('password').value='venkata1'");
-		ReusableMethods.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 
 		logger.log(LogStatus.INFO, "Login details has been entered");
 
 		// click on Login button to submit the details
-		WebElement submitButn = ReusableMethods.driver.findElement(By.id("submitButton"));
+		WebElement submitButn = driver.findElement(By.id("submitButton"));
 		submitButn.click();
 
 		logger.log(LogStatus.INFO, "Successfully Logged in with valid email and password");
-
-		// closeBrowser();
-		// closeReport();
 
 	}
 
@@ -97,15 +115,15 @@ public class XeroTestCases extends ReusableMethods {
 		JavascriptExecutor JS = (JavascriptExecutor) driver;
 		JS.executeScript("document.getElementById('email').value='vasavijb@gmail.com'");
 		JS.executeScript("document.getElementById('password').value='invalid'");
-		ReusableMethods.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		logger.log(LogStatus.INFO, " Login details has been entered ");
 
 		// click on Login button to submit the details
-		WebElement submitButn = ReusableMethods.driver.findElement(By.id("submitButton"));
+		WebElement submitButn = driver.findElement(By.id("submitButton"));
 		submitButn.click();
 
 		//
-		WebElement actualMessage = ReusableMethods.driver
+		WebElement actualMessage = driver
 				.findElement(By.xpath("//p[contains(text(),'Your email or password is incorrect')]"));
 		actualMessage.getText();
 		logger.log(LogStatus.INFO, actualMessage.getText());
@@ -122,6 +140,7 @@ public class XeroTestCases extends ReusableMethods {
 	}
 
 	@Test
+
 	public void test01IncorrectEmail() {
 
 		launchLoginPage();
@@ -130,16 +149,16 @@ public class XeroTestCases extends ReusableMethods {
 		JavascriptExecutor JS = (JavascriptExecutor) driver;
 		JS.executeScript("document.getElementById('email').value='vasavi@gmail.com'");
 		JS.executeScript("document.getElementById('password').value='venkata1'");
-		ReusableMethods.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 		logger.log(LogStatus.INFO, " Incorrect Email has been entered ");
 
 		// click on Login button to submit the details
-		WebElement submitButn = ReusableMethods.driver.findElement(By.id("submitButton"));
+		WebElement submitButn = driver.findElement(By.id("submitButton"));
 		submitButn.click();
 
-		ReusableMethods.driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
-		WebElement actualMessage = ReusableMethods.driver
+		WebElement actualMessage = driver
 				.findElement(By.xpath("//p[contains(text(),'Your email or password is incorrect')]"));
 		actualMessage.getText();
 		logger.log(LogStatus.INFO, actualMessage.getText());
@@ -162,27 +181,27 @@ public class XeroTestCases extends ReusableMethods {
 
 		JavascriptExecutor JS = (JavascriptExecutor) driver;
 		JS.executeScript("document.getElementById('email').value='vasavijb@gmail.com'");
-		ReusableMethods.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-		
-		WebElement forgotpassword = ReusableMethods.driver
-				.findElement(By.xpath("//a[@class='forgot-password-advert']"));
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+
+		WebElement forgotpassword = driver.findElement(By.xpath("//a[@class='forgot-password-advert']"));
 		forgotpassword.click();
 
-		WebElement forgotpasswordUsername = ReusableMethods.driver.findElement(By.xpath("//input[@id='UserName']"));
+		WebElement forgotpasswordUsername = driver.findElement(By.xpath("//input[@id='UserName']"));
 
 		forgotpasswordUsername.sendKeys("vasavijb@gmail.com");
 
-		WebElement UsernameSend = ReusableMethods.driver.findElement(By.xpath("//span[@class='text']"));
+		WebElement UsernameSend = driver.findElement(By.xpath("//span[@class='text']"));
 		UsernameSend.click();
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 
-		WebElement actualResetMessage = ReusableMethods.driver
-				.findElement(By.cssSelector("html.ext-strict body#login.x-page.ext-gecko.ext-gecko3 div.content div.inner div#contentTop.document.clear div.x-boxed.noBorder p"));
-		actualResetMessage.getText();
-		//logger.log(LogStatus.INFO, actualResetMessage.getText());
+
+		WebElement actualResetMessage = driver.findElement(By.xpath(
+				"//p[contains(text(),'A link to reset your password has been sent to:')]"));
+		logger.log(LogStatus.INFO, actualResetMessage.getText());
 
 		String resetMessage = "A link to reset your password has been sent to:";
 
-		if (actualResetMessage.getText().equals(resetMessage)) {
+		if (actualResetMessage.getText().startsWith(resetMessage)) {
 			logger.log(LogStatus.INFO, "Test Case Passed");
 		} else {
 			logger.log(LogStatus.INFO, "Test Case Failed");
@@ -190,15 +209,9 @@ public class XeroTestCases extends ReusableMethods {
 
 		}
 	}
-	
+
 	@Test
 	public void test02_A_SignUpToXDC() {
-		
-		
-		createReport();
-
-		WebDriverManager.firefoxdriver().setup();
-		driver = new FirefoxDriver();
 
 		driver.get("https://www.xero.com/us/");
 
@@ -207,25 +220,24 @@ public class XeroTestCases extends ReusableMethods {
 		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
 		logger = report.startTest("test02SignUpToXDC");
-		WebElement freeTrialButton = ReusableMethods.driver.findElement(By.xpath("//a[@class='btn btn-primary global-ceiling-bar-btn']"));
+		WebElement freeTrialButton = driver
+				.findElement(By.xpath("//a[@class='btn btn-primary global-ceiling-bar-btn']"));
 		freeTrialButton.click();
-		ReusableMethods.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 
-		WebElement name = ReusableMethods.driver.findElement(By.xpath("//input[@name='FirstName']"));
+		WebElement name = driver.findElement(By.xpath("//input[@name='FirstName']"));
 		name.sendKeys("Vasavi");
 
-
-		WebElement lastName = ReusableMethods.driver.findElement(By.xpath("//input[@name='LastName']" ));
+		WebElement lastName = driver.findElement(By.xpath("//input[@name='LastName']"));
 		lastName.sendKeys("Bodepu");
-		
-		WebElement email = ReusableMethods.driver.findElement(By.xpath("//input[@name='EmailAddress']" ));
+
+		WebElement email = driver.findElement(By.xpath("//input[@name='EmailAddress']"));
 		email.sendKeys("vasavijb@gmail.com");
-		
-		
-		WebElement phone = ReusableMethods.driver.findElement(By.name("PhoneNumber"));
+
+		WebElement phone = driver.findElement(By.name("PhoneNumber"));
 		phone.sendKeys("2148097578");
-		
-		WebElement country = ReusableMethods.driver.findElement(By.name("LocationCode"));
+
+		WebElement country = driver.findElement(By.name("LocationCode"));
 		country.click();
 //		if (country.isDisplayed()) {
 //			System.out.println("Pass: " + "United States" + " is  selected");
@@ -235,29 +247,22 @@ public class XeroTestCases extends ReusableMethods {
 //			System.out.println("Fail:" + "United States" + " is not present.Please chk application");
 //			
 //		}
-		ReusableMethods.driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
-		//WebElement captcha = ReusableMethods.driver.findElement(By.id("rc-anchor-container"));
+		// driver.switchTo().frame("rc-anchor-container");
+		// captcha.click();
 
-		//driver.switchTo().frame("rc-anchor-container");
-		//captcha.click();
-		
-		WebElement TermsAccepted = ReusableMethods.driver.findElement(By.name("TermsAccepted"));
+		WebElement TermsAccepted = driver.findElement(By.name("TermsAccepted"));
 		TermsAccepted.click();
-		
-		WebElement getStartedBtn = ReusableMethods.driver.findElement(By.xpath("//span[@class='g-recaptcha-submit']"));
+
+		WebElement getStartedBtn = driver.findElement(By.xpath("//span[@class='g-recaptcha-submit']"));
 		getStartedBtn.click();
 		System.out.println("Get Started is selected for test02_A_SignUpToXDC");
 
-		
-		
 	}
-	
+
 	@Test
 	public void test02_B_SignUpToXDC() {
-		
-		
-		createReport();
 
 		WebDriverManager.firefoxdriver().setup();
 		driver = new FirefoxDriver();
@@ -269,29 +274,25 @@ public class XeroTestCases extends ReusableMethods {
 		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
 		logger = report.startTest("test02_B_SignUpToXDC");
-		WebElement freeTrialButton = ReusableMethods.driver.findElement(By.xpath("//a[@class='btn btn-primary global-ceiling-bar-btn']"));
+		WebElement freeTrialButton = driver
+				.findElement(By.xpath("//a[@class='btn btn-primary global-ceiling-bar-btn']"));
 		freeTrialButton.click();
-		ReusableMethods.driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
 
-		
-		WebElement getStartedBtn = ReusableMethods.driver.findElement(By.xpath("//span[@class='g-recaptcha-submit']"));
-		getStartedBtn.click();
+//		WebElement getStartedBtn = ReusableMethods.driver.findElement(By.xpath("//span[@class='g-recaptcha-submit']"));
+//				Actions action = new Actions(driver);
+//				action.moveToElement (getStartedBtn).build().perform();
+//				Keyboard keyboard = ( (HasInputDevices)driver).getkeyboard();
+//				keyboard .presskey(Keys.Enter);
+//		WebElement getStartedBtn = ReusableMethods.driver.findElement(By.xpath("//span[@class='g-recaptcha-submit']"));
+//		getStartedBtn.click();
 		System.out.println("Get Started is selected for test02_B_SignUpToXDC");
-		test02_B_SignUpToXDC.log(LogStatus.PASS,”Test Passed”);
-		
-		
-		
-	
-	
+		logger.log(LogStatus.PASS, "Test Passed");
+
 	}
+
 	@Test
 	public void test02_C_SignUpToXDC() {
-		
-		
-		createReport();
-
-		WebDriverManager.firefoxdriver().setup();
-		driver = new FirefoxDriver();
 
 		driver.get("https://www.xero.com/us/");
 
@@ -300,25 +301,29 @@ public class XeroTestCases extends ReusableMethods {
 		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
 
 		logger = report.startTest("test02BSignUpToXDC");
-		WebElement freeTrialButton = ReusableMethods.driver.findElement(By.xpath("//a[@class='btn btn-primary global-ceiling-bar-btn']"));
+		WebElement freeTrialButton = driver
+				.findElement(By.xpath("//a[@class='btn btn-primary global-ceiling-bar-btn']"));
 		freeTrialButton.click();
-		ReusableMethods.driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		logger.log(LogStatus.INFO, "Free Trial Button is selected");
 
-		
-		WebElement termsOfUse = ReusableMethods.driver.findElement(By.xpath("//a[contains(text(),'terms')]"));
+		WebElement termsOfUse = driver.findElement(By.xpath("//a[contains(text(),'terms')]"));
 		termsOfUse.click();
-		ReusableMethods.driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+		logger.log(LogStatus.INFO, "Terms of use is displayed");
 
-		WebElement privacyPolicy = ReusableMethods.driver.findElement(By.xpath("//a[contains(text(),'privacy')]"));
+		WebElement privacyPolicy = driver.findElement(By.xpath("//a[contains(text(),'privacy')]"));
 		privacyPolicy.click();
-		//a[contains(text(),'privacy')]
-		
+		logger.log(LogStatus.INFO, "Privacy policy is displayed");
+
 	}
-	
+
 	@AfterClass
 	public void closeTests() {
 		// closeBrowser();
 		closeReport();
+		driver.quit();
+
 	}
 
 }

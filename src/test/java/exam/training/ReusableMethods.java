@@ -46,9 +46,9 @@ public class ReusableMethods {
 
 	
 
-	public static void closeBrowser() {
-		driver.quit();
-	}
+	//public static void closeBrowser() {
+	//	driver.quit();
+	//}
 
 	public static void closeReport() {
 		report.flush();
